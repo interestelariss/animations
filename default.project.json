@@ -1,0 +1,23 @@
+{
+  "name": "SpellSystem",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "SpellSystem": {
+        "$path": "src/ReplicatedStorage/SpellSystem"
+      }
+    },
+    "ServerScriptService": {
+      "SpellServer": {
+        "$path": "src/ServerScriptService/SpellServer.server.luau"
+      }
+    },
+    "StarterPlayer": {
+      "StarterPlayerScripts": {
+        "SpellClient": {
+          "$path": "src/StarterPlayer/StarterPlayerScripts/SpellClient.client.luau"
+        }
+      }
+    }
+  }
+}
