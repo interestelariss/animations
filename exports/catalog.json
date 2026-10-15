@@ -1,0 +1,488 @@
+[
+ {
+  "id": "egg_comun_basico",
+  "title": "Huevo Básico",
+  "rarity": "comun",
+  "rarityName": "Común",
+  "level": 0,
+  "group": "comun",
+  "cubes": 749
+ },
+ {
+  "id": "egg_comun_cielo",
+  "title": "Huevo Cielo",
+  "rarity": "comun",
+  "rarityName": "Común",
+  "level": 0,
+  "group": "comun",
+  "cubes": 749
+ },
+ {
+  "id": "egg_comun_lima",
+  "title": "Huevo Lima",
+  "rarity": "comun",
+  "rarityName": "Común",
+  "level": 0,
+  "group": "comun",
+  "cubes": 749
+ },
+ {
+  "id": "egg_comun_melocoton",
+  "title": "Huevo Melocotón",
+  "rarity": "comun",
+  "rarityName": "Común",
+  "level": 0,
+  "group": "comun",
+  "cubes": 749
+ },
+ {
+  "id": "egg_comun_nube",
+  "title": "Huevo Nube",
+  "rarity": "comun",
+  "rarityName": "Común",
+  "level": 0,
+  "group": "comun",
+  "cubes": 749
+ },
+ {
+  "id": "egg_comun_arena",
+  "title": "Huevo de Arena",
+  "rarity": "comun",
+  "rarityName": "Común",
+  "level": 0,
+  "group": "comun",
+  "cubes": 749
+ },
+ {
+  "id": "egg_comun_barro",
+  "title": "Huevo de Barro",
+  "rarity": "comun",
+  "rarityName": "Común",
+  "level": 0,
+  "group": "comun",
+  "cubes": 755
+ },
+ {
+  "id": "egg_comun_cacao",
+  "title": "Huevo de Cacao",
+  "rarity": "comun",
+  "rarityName": "Común",
+  "level": 0,
+  "group": "comun",
+  "cubes": 749
+ },
+ {
+  "id": "egg_comun_hierba",
+  "title": "Huevo de Hierba",
+  "rarity": "comun",
+  "rarityName": "Común",
+  "level": 0,
+  "group": "comun",
+  "cubes": 755
+ },
+ {
+  "id": "egg_comun_piedra",
+  "title": "Huevo de Piedra",
+  "rarity": "comun",
+  "rarityName": "Común",
+  "level": 0,
+  "group": "comun",
+  "cubes": 749
+ },
+ {
+  "id": "egg_pc_brasa",
+  "title": "Huevo Brasa",
+  "rarity": "poco_comun",
+  "rarityName": "Poco común",
+  "level": 1,
+  "group": "poco_comun",
+  "cubes": 810
+ },
+ {
+  "id": "egg_pc_calabaza",
+  "title": "Huevo Calabaza",
+  "rarity": "poco_comun",
+  "rarityName": "Poco común",
+  "level": 1,
+  "group": "poco_comun",
+  "cubes": 835
+ },
+ {
+  "id": "egg_pc_escarcha",
+  "title": "Huevo Escarcha",
+  "rarity": "poco_comun",
+  "rarityName": "Poco común",
+  "level": 1,
+  "group": "poco_comun",
+  "cubes": 810
+ },
+ {
+  "id": "egg_pc_oceano",
+  "title": "Huevo Océano",
+  "rarity": "poco_comun",
+  "rarityName": "Poco común",
+  "level": 1,
+  "group": "poco_comun",
+  "cubes": 810
+ },
+ {
+  "id": "egg_pc_pradera",
+  "title": "Huevo Pradera",
+  "rarity": "poco_comun",
+  "rarityName": "Poco común",
+  "level": 1,
+  "group": "poco_comun",
+  "cubes": 816
+ },
+ {
+  "id": "egg_pc_arcilla",
+  "title": "Huevo de Arcilla",
+  "rarity": "poco_comun",
+  "rarityName": "Poco común",
+  "level": 1,
+  "group": "poco_comun",
+  "cubes": 810
+ },
+ {
+  "id": "egg_pc_miel",
+  "title": "Huevo de Miel",
+  "rarity": "poco_comun",
+  "rarityName": "Poco común",
+  "level": 1,
+  "group": "poco_comun",
+  "cubes": 816
+ },
+ {
+  "id": "egg_pc_bosque",
+  "title": "Huevo del Bosque",
+  "rarity": "poco_comun",
+  "rarityName": "Poco común",
+  "level": 1,
+  "group": "poco_comun",
+  "cubes": 816
+ },
+ {
+  "id": "egg_raro_amatista",
+  "title": "Huevo Amatista",
+  "rarity": "raro",
+  "rarityName": "Raro",
+  "level": 2,
+  "group": "raro",
+  "cubes": 1110
+ },
+ {
+  "id": "egg_raro_caramelo",
+  "title": "Huevo Caramelo",
+  "rarity": "raro",
+  "rarityName": "Raro",
+  "level": 2,
+  "group": "raro",
+  "cubes": 1108
+ },
+ {
+  "id": "egg_raro_hongo",
+  "title": "Huevo Hongo",
+  "rarity": "raro",
+  "rarityName": "Raro",
+  "level": 2,
+  "group": "raro",
+  "cubes": 1121
+ },
+ {
+  "id": "egg_raro_panal",
+  "title": "Huevo Panal Real",
+  "rarity": "raro",
+  "rarityName": "Raro",
+  "level": 2,
+  "group": "raro",
+  "cubes": 1133
+ },
+ {
+  "id": "egg_raro_rubi",
+  "title": "Huevo Rubí",
+  "rarity": "raro",
+  "rarityName": "Raro",
+  "level": 2,
+  "group": "raro",
+  "cubes": 1083
+ },
+ {
+  "id": "egg_raro_tigre",
+  "title": "Huevo Tigre",
+  "rarity": "raro",
+  "rarityName": "Raro",
+  "level": 2,
+  "group": "raro",
+  "cubes": 1115
+ },
+ {
+  "id": "egg_raro_coral",
+  "title": "Huevo de Coral",
+  "rarity": "raro",
+  "rarityName": "Raro",
+  "level": 2,
+  "group": "raro",
+  "cubes": 1131
+ },
+ {
+  "id": "egg_epico_bosque_encantado",
+  "title": "Bosque Encantado",
+  "rarity": "epico",
+  "rarityName": "Épico",
+  "level": 3,
+  "group": "epico",
+  "cubes": 1451
+ },
+ {
+  "id": "egg_epico_dragon_fuego",
+  "title": "Dragón de Fuego",
+  "rarity": "epico",
+  "rarityName": "Épico",
+  "level": 3,
+  "group": "epico",
+  "cubes": 1500
+ },
+ {
+  "id": "egg_epico_esmeralda",
+  "title": "Huevo Esmeralda",
+  "rarity": "epico",
+  "rarityName": "Épico",
+  "level": 3,
+  "group": "epico",
+  "cubes": 1700
+ },
+ {
+  "id": "egg_epico_mecanico",
+  "title": "Huevo Mecánico",
+  "rarity": "epico",
+  "rarityName": "Épico",
+  "level": 3,
+  "group": "epico",
+  "cubes": 1356
+ },
+ {
+  "id": "egg_epico_unicornio",
+  "title": "Huevo Unicornio",
+  "rarity": "epico",
+  "rarityName": "Épico",
+  "level": 3,
+  "group": "epico",
+  "cubes": 1298
+ },
+ {
+  "id": "egg_epico_rey_mar",
+  "title": "Rey del Mar",
+  "rarity": "epico",
+  "rarityName": "Épico",
+  "level": 3,
+  "group": "epico",
+  "cubes": 1302
+ },
+ {
+  "id": "egg_mitico_dragon_glacial",
+  "title": "Dragón Glacial",
+  "rarity": "mitico",
+  "rarityName": "Mítico",
+  "level": 4,
+  "group": "mitico",
+  "cubes": 1692
+ },
+ {
+  "id": "egg_mitico_fenix",
+  "title": "Fénix",
+  "rarity": "mitico",
+  "rarityName": "Mítico",
+  "level": 4,
+  "group": "mitico",
+  "cubes": 2053
+ },
+ {
+  "id": "egg_mitico_golem_jade",
+  "title": "Gólem de Jade",
+  "rarity": "mitico",
+  "rarityName": "Mítico",
+  "level": 4,
+  "group": "mitico",
+  "cubes": 1834
+ },
+ {
+  "id": "egg_mitico_kraken",
+  "title": "Kraken",
+  "rarity": "mitico",
+  "rarityName": "Mítico",
+  "level": 4,
+  "group": "mitico",
+  "cubes": 1721
+ },
+ {
+  "id": "egg_leg_arcoiris",
+  "title": "Dragón Arcoíris",
+  "rarity": "legendario",
+  "rarityName": "Legendario",
+  "level": 5,
+  "group": "legendario",
+  "cubes": 2319
+ },
+ {
+  "id": "egg_leg_luna",
+  "title": "Luna de Plata",
+  "rarity": "legendario",
+  "rarityName": "Legendario",
+  "level": 5,
+  "group": "legendario",
+  "cubes": 2291
+ },
+ {
+  "id": "egg_leg_sol",
+  "title": "Sol Dorado",
+  "rarity": "legendario",
+  "rarityName": "Legendario",
+  "level": 5,
+  "group": "legendario",
+  "cubes": 2296
+ },
+ {
+  "id": "egg_secreto_prisma",
+  "title": "Huevo Prisma",
+  "rarity": "secreto",
+  "rarityName": "Secreto",
+  "level": 6,
+  "group": "secreto",
+  "cubes": 2412
+ },
+ {
+  "id": "egg_secreto_vacio",
+  "title": "Huevo del Vacío",
+  "rarity": "secreto",
+  "rarityName": "Secreto",
+  "level": 6,
+  "group": "secreto",
+  "cubes": 2217
+ },
+ {
+  "id": "egg_hacker_glitch",
+  "title": "Error 404",
+  "rarity": "hacker",
+  "rarityName": "Hacker",
+  "level": 5,
+  "group": "hacker",
+  "cubes": 1757
+ },
+ {
+  "id": "egg_hacker_firewall",
+  "title": "Firewall",
+  "rarity": "hacker",
+  "rarityName": "Hacker",
+  "level": 5,
+  "group": "hacker",
+  "cubes": 1802
+ },
+ {
+  "id": "egg_hacker_matrix",
+  "title": "Matrix",
+  "rarity": "hacker",
+  "rarityName": "Hacker",
+  "level": 5,
+  "group": "hacker",
+  "cubes": 1787
+ },
+ {
+  "id": "egg_hacker_robux",
+  "title": "Robux Hacker",
+  "rarity": "hacker",
+  "rarityName": "Hacker",
+  "level": 5,
+  "group": "hacker",
+  "cubes": 1825
+ },
+ {
+  "id": "egg_hacker_terminal",
+  "title": "Terminal",
+  "rarity": "hacker",
+  "rarityName": "Hacker",
+  "level": 5,
+  "group": "hacker",
+  "cubes": 1812
+ },
+ {
+  "id": "egg_celestial",
+  "title": "Huevo Celestial",
+  "rarity": "legendario",
+  "rarityName": "Legendario",
+  "level": 5,
+  "group": "destacados",
+  "cubes": 2627
+ },
+ {
+  "id": "egg_galaxy",
+  "title": "Huevo Galaxia",
+  "rarity": "legendario",
+  "rarityName": "Legendario",
+  "level": 5,
+  "group": "destacados",
+  "cubes": 3043
+ },
+ {
+  "id": "egg_inferno",
+  "title": "Huevo Infernal",
+  "rarity": "mitico",
+  "rarityName": "Mítico",
+  "level": 4,
+  "group": "destacados",
+  "cubes": 1859
+ },
+ {
+  "id": "egg_sakura",
+  "title": "Huevo Sakura",
+  "rarity": "legendario",
+  "rarityName": "Legendario",
+  "level": 5,
+  "group": "destacados",
+  "cubes": 1863
+ },
+ {
+  "id": "egg_storm",
+  "title": "Huevo Tormenta",
+  "rarity": "mitico",
+  "rarityName": "Mítico",
+  "level": 4,
+  "group": "destacados",
+  "cubes": 1645
+ },
+ {
+  "id": "egg_ice",
+  "title": "Huevo de Hielo",
+  "rarity": "mitico",
+  "rarityName": "Mítico",
+  "level": 4,
+  "group": "destacados",
+  "cubes": 2194
+ },
+ {
+  "id": "egg_swamp",
+  "title": "Huevo del Pantano",
+  "rarity": "epico",
+  "rarityName": "Épico",
+  "level": 3,
+  "group": "destacados",
+  "cubes": 1987
+ },
+ {
+  "id": "mailbox",
+  "title": "Buzón-Monstruo",
+  "rarity": "otros",
+  "rarityName": "Otros",
+  "level": -1,
+  "group": "otros",
+  "cubes": 183
+ },
+ {
+  "id": "shark_dino",
+  "title": "Tiburón-Dino",
+  "rarity": "otros",
+  "rarityName": "Otros",
+  "level": -1,
+  "group": "otros",
+  "cubes": 345
+ }
+]

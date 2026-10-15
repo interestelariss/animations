@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Colección de Huevos</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #05070c; color: #e8edf5; font-family: system-ui, sans-serif; }
+  canvas { display: block; width: 100%; height: 100%; cursor: grab; touch-action: none; }
+  nav { position: fixed; top: 16px; left: 16px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  select, button { min-height: 40px; padding: 0 14px; border: 1px solid #ffffff40; background: #000a; color: #fff; font: inherit; cursor: pointer; }
+  #info { position: fixed; left: 16px; bottom: 16px; font-size: 14px; color: #c9d3e0; }
+  #info b { font-size: 22px; color: #fff; display: block; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<nav>
+  <label for="pick" style="position:absolute;left:-9999px">Modelo</label>
+  <select id="pick"></select>
+  <button id="burst" type="button">¡Romper huevo!</button>
+  <button id="spin" type="button">Giro: sí</button>
+</nav>
+<div id="info"></div>
+<script src="vendor/three.min.js"></script>
+<script src="voxelstage.js"></script>
+<script>
+  // Visor local: sirve la carpeta del repo (python3 -m http.server) y abre /viewer/
+  const canvas = document.getElementById('c');
+  const pick = document.getElementById('pick');
+  const info = document.getElementById('info');
+  const params = new URLSearchParams(location.search);
+  let stage = null, spin = !params.has('still'), catalog = [];
+
+  function load(id) {
+    if (stage) stage.dispose();
+    fetch('../exports/' + id + '.json').then(r => r.json()).then(d => {
+      stage = VoxelStage.create(canvas, d);
+      stage.setSpin(spin);
+      window.stage = stage;
+      const it = catalog.find(c => c.id === id) || { title: id, rarityName: '' };
+      info.innerHTML = '<b>' + it.title + '</b>' + it.rarityName + ' · ' + stage.cubes + ' cubos';
+    });
+    history.replaceState(null, '', '?m=' + id + (spin ? '' : '&still=1'));
+  }
+
+  fetch('../exports/catalog.json').then(r => r.json()).then(list => {
+    catalog = list;
+    const groups = {};
+    list.forEach(it => (groups[it.group] = groups[it.group] || []).push(it));
+    Object.entries(groups).forEach(([g, items]) => {
+      const og = document.createElement('optgroup');
+      og.label = items[0].group === 'destacados' ? 'Destacados' : items[0].rarityName;
+      items.forEach(it => { const o = document.createElement('option'); o.value = it.id; o.textContent = it.title; og.appendChild(o); });
+      pick.appendChild(og);
+    });
+    const first = params.get('m') || 'egg_celestial';
+    pick.value = first;
+    load(first);
+  });
+  pick.onchange = () => load(pick.value);
+  document.getElementById('burst').onclick = () => stage && stage.burst();
+  document.getElementById('spin').onclick = (e) => { spin = !spin; stage && stage.setSpin(spin); e.target.textContent = 'Giro: ' + (spin ? 'sí' : 'no'); };
+</script>
+</body>
+</html>
