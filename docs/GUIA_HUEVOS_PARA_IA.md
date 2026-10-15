@@ -449,3 +449,61 @@ S("raro_menta", "Huevo Menta", "raro", ["#9ff0d0", "#8ae6c2", "#b4f6dc"], "#ffff
 - [ ] La base cuenta la temática (estanque, lava, asteroide, koi…)
 - [ ] Tiene partículas del tema y su color de estallido para "romper"
 - [ ] El nivel de detalle, animación y VFX corresponde a su rareza (sección 8)
+
+---
+
+## 11. Animales de renacimiento (lo principal del juego)
+
+Archivo: `blender/rebirth.py` (+ `blender/sculpt.py`). Son 20 formas, del
+Conejo (renacimiento 1) a la Genesis Beast (20). **Todos llevan el máximo
+detalle**, no dependen de rarezas. Del 1 al 4 se usa la primera versión de
+bloques (`blender/animals.py`), que gustó más. Del 5 al 20 son **esculturas de
+vóxeles**:
+
+- **Escultura de vóxeles:** cada parte se define con elipsoides y cápsulas
+  (con ruido para el pelo, la roca o la melena) y se convierte en cubitos de
+  superficie (`voxelize`). Cuerpo = pecho + costillas + cintura + cadera +
+  omóplatos + cuello. Cabeza = cráneo + cejas + mofletes + hocico + nariz.
+  Mandíbula aparte, patas de 2 segmentos con zarpas, cola articulada.
+- **Color de pelaje:** 3 tonos mezclados, lomo más oscuro, vientre claro y un
+  patrón (rayas, manchas, runas brillantes, cósmico, escamas, roca con musgo).
+- **Detalles que los hacen épicos:** ojos con iris y brillo, cejas, colmillos,
+  garras, coronas y armaduras de oro, cristales, llamas, alas de plumas o de
+  membrana, halos, planetas orbitando y bases con anillos de energía.
+- **Tamaño de vóxel:** se buscan unos 2.000–8.000 cubos por animal. Más no
+  aporta; lo que importa es que se vea bien.
+- **Pose de reposo neutra:** de pie, recta y simétrica (las serpientes y el
+  ciempiés estirados en línea recta). La animación se hace después con los
+  huesos.
+
+## 12. Mascotas (4 por huevo, ~480)
+
+Archivo: `blender/pets.py` + `blender/pet_names.py`. Cada huevo tiene 4
+mascotas con su temática (Panal Real → Abeja Reina, Obrera, Zángano,
+Guardiana; Rubí → golem, escarabajo, serpiente y zorro de rubí…). Hay 16 tipos
+de cuerpo: cuadrúpedos (gato, perro, zorro, conejo, oso, panda, ciervo,
+caballo, unicornio, tigre, león, lobo, cerdo, ratón), aves, peces y tiburones,
+insectos, serpientes, dragones, slimes, fantasmas, medusas, setas, golems,
+robots, pulpos, ranas, tortugas, cangrejos y murciélagos. Los colores salen de
+la paleta del huevo.
+
+**La rareza del huevo decide la calidad de sus mascotas:**
+
+| Nivel | Vóxel | Accesorios | Animación | VFX |
+|---|---|---|---|---|
+| Común | grande | ninguno | saltito / balanceo | ninguno |
+| Poco común | | + collar | + caminar, cola | pocas chispas |
+| Raro | | + gema en la frente, ojos brillantes | + orejas | brillo de suelo |
+| Épico | | + alas del tipo del huevo, aura | + mandíbula, aleteo | 2 sistemas de partículas |
+| Mítico | | + orbes orbitando, corona | | + bloom |
+| Legendario | | + halo, aura doble | | 3 sistemas |
+| Secreto | fino | + llamas de aura | todo | máximo (con brillo contenido) |
+
+## 13. Huesos (esqueleto) en Blender
+
+Cada modelo se construye con un **Armature**: un hueso por parte animable
+(cuerpo, cabeza, mandíbula, orejas, patas, colas, alas, segmentos…) con la
+misma jerarquía. La malla es única, con un grupo de vértices por hueso
+(peso 1, piel rígida) y modificadores Bevel y Armature. La animación de
+reposo se guarda como keyframes de los huesos (`matrix_basis = reposo⁻¹ ·
+pose`) y se exporta en el `.glb` (esqueleto + animación) de los animales.

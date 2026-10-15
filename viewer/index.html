@@ -35,7 +35,7 @@
   function load(id) {
     if (stage) stage.dispose();
     fetch('../exports/' + id + '.json').then(r => r.json()).then(d => {
-      stage = VoxelStage.create(canvas, d);
+      stage = VoxelStage.create(canvas, d, params.has('studs') ? { studs: true } : {});
       stage.setSpin(spin);
       window.stage = stage;
       const it = catalog.find(c => c.id === id) || { title: id, rarityName: '' };

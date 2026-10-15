@@ -58,6 +58,42 @@
     });
   }
 
+  function studBump() {
+    // relieve de un "stud" (botón tipo LEGO) para el bumpMap; se repite por cara según el tamaño de la pieza
+    var t = canvasTexture(128, function (g, s) {
+      g.fillStyle = 'rgb(118,118,118)';
+      g.fillRect(0, 0, s, s);
+      g.fillStyle = 'rgb(96,96,96)';
+      g.fillRect(0, 0, s, 3); g.fillRect(0, 0, 3, s);
+      var c = s / 2, r = s * 0.3;
+      g.beginPath(); g.arc(c + 3, c + 4, r + 3, 0, Math.PI * 2); g.fillStyle = 'rgb(70,70,70)'; g.fill();
+      var gr = g.createRadialGradient(c - r * 0.3, c - r * 0.3, r * 0.1, c, c, r);
+      gr.addColorStop(0, 'rgb(250,250,250)'); gr.addColorStop(0.75, 'rgb(215,215,215)'); gr.addColorStop(1, 'rgb(180,180,180)');
+      g.beginPath(); g.arc(c, c, r, 0, Math.PI * 2); g.fillStyle = gr; g.fill();
+    });
+    t.encoding = T.LinearEncoding;
+    t.wrapS = t.wrapT = T.RepeatWrapping;
+    t.anisotropy = 4;
+    return t;
+  }
+
+  function addStuds(mat, tex, size, bump) {
+    mat.bumpMap = tex;
+    mat.bumpScale = bump;
+    mat.onBeforeCompile = function (sh) {
+      sh.uniforms.studSize = { value: size };
+      sh.vertexShader = 'uniform float studSize;\n' + sh.vertexShader.replace('#include <uv_vertex>', [
+        '#ifdef USE_UV',
+        '  vec3 sc = vec3(length(instanceMatrix[0].xyz), length(instanceMatrix[1].xyz), length(instanceMatrix[2].xyz));',
+        '  vec2 rep = abs(normal.x) > 0.5 ? sc.zy : (abs(normal.y) > 0.5 ? sc.xz : sc.xy);',
+        '  rep = max(vec2(1.0), floor(rep / studSize + 0.5));',
+        '  vUv = uv * rep;',
+        '#endif',
+      ].join('\n'));
+    };
+    mat.customProgramCacheKey = function () { return 'studs' + size; };
+  }
+
   function squareDot() {
     return canvasTexture(32, function (g, s) {
       g.fillStyle = 'rgba(255,255,255,1)';
@@ -310,6 +346,59 @@
     return rt;
   }
 
+  // ------------------------------------------------------------------ piezas suaves
+  var _sph = null;
+  function primGeo(r, stud) {
+    var parts = [];
+    var sph = function (c, rad, q) {
+      var gg = (_sph || (_sph = new T.SphereGeometry(1, 24, 16))).clone();
+      var m4 = new T.Matrix4().compose(new T.Vector3().fromArray(c), q || new T.Quaternion(), new T.Vector3().fromArray(rad));
+      gg.applyMatrix4(m4);
+      var ru = Math.max(1, Math.round(Math.PI * (rad[0] + rad[2]) / stud)), rv = Math.max(1, Math.round(Math.PI * rad[1] / stud));
+      var uv = gg.attributes.uv;
+      for (var i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) * ru, uv.getY(i) * rv);
+      parts.push(gg);
+    };
+    if (r[0] === 0) {
+      sph([r[1], r[2], r[3]], [r[4], r[5], r[6]], new T.Quaternion(r[7], r[8], r[9], r[10]));
+    } else {
+      var a = new T.Vector3(r[1], r[2], r[3]), b = new T.Vector3(r[4], r[5], r[6]), ra = r[7], rb = r[8];
+      var d = new T.Vector3().subVectors(b, a), len = d.length();
+      if (len > 1e-4) {
+        var cyl = new T.CylinderGeometry(rb, ra, len, 20, 1, true);
+        var q = new T.Quaternion().setFromUnitVectors(new T.Vector3(0, 1, 0), d.clone().normalize());
+        cyl.applyMatrix4(new T.Matrix4().compose(a.clone().add(b).multiplyScalar(0.5), q, new T.Vector3(1, 1, 1)));
+        var ru = Math.max(1, Math.round(Math.PI * (ra + rb) / stud)), rv = Math.max(1, Math.round(len / stud));
+        var uv = cyl.attributes.uv;
+        for (var i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) * ru, uv.getY(i) * rv);
+        parts.push(cyl);
+      }
+      sph([a.x, a.y, a.z], [ra, ra, ra]);
+      sph([b.x, b.y, b.z], [rb, rb, rb]);
+    }
+    return parts;
+  }
+
+  function mergeGeos(lists) {
+    var geos = [].concat.apply([], lists).map(function (g) { return g.index ? g.toNonIndexed() : g; });
+    var n = 0;
+    geos.forEach(function (g) { n += g.attributes.position.count; });
+    var pos = new Float32Array(n * 3), nor = new Float32Array(n * 3), uv = new Float32Array(n * 2), o3 = 0, o2 = 0;
+    geos.forEach(function (g) {
+      pos.set(g.attributes.position.array, o3);
+      nor.set(g.attributes.normal.array, o3);
+      uv.set(g.attributes.uv.array, o2);
+      o3 += g.attributes.position.array.length;
+      o2 += g.attributes.uv.array.length;
+      g.dispose();
+    });
+    var out = new T.BufferGeometry();
+    out.setAttribute('position', new T.BufferAttribute(pos, 3));
+    out.setAttribute('normal', new T.BufferAttribute(nor, 3));
+    out.setAttribute('uv', new T.BufferAttribute(uv, 2));
+    return out;
+  }
+
   // ------------------------------------------------------------------ escena principal
   function create(canvas, data, o) {
     T.ColorManagement.legacyMode = false;
@@ -371,7 +460,7 @@
     var root = new T.Group();
     scene.add(root);
     var unit = new T.BoxGeometry(1, 1, 1);
-    var mats = {}, glow = {}, nodes = {}, cubes = 0, burstSets = [];
+    var mats = {}, glow = {}, nodes = {}, cubes = 0, burstSets = [], studTex = null;
     var dummy = new T.Object3D();
     data.parts.forEach(function (p) {
       var g = new T.Group();
@@ -380,7 +469,12 @@
       (p.parent ? nodes[p.parent] : root).add(g);
       nodes[p.name] = g;
       var groups = {};
-      p.boxes.forEach(function (b) {
+      var boxes = p.boxes || (p.bx || []).map(function (r) {
+        // formato compacto: [x,y,z, sx,sy,sz, color, emit, tag, metal, qx,qy,qz,qw]
+        return { c: [r[0], r[1], r[2]], s: [r[3], r[4], r[5]], col: data.pal[r[6]], emit: r[7] || 0,
+                 tag: r[8] ? data.tags[r[8] - 1] : null, metal: r[9] || 0, q: r.length > 10 ? [r[10], r[11], r[12], r[13]] : [0, 0, 0, 1] };
+      });
+      boxes.forEach(function (b) {
         var k = b.col + '|' + (b.emit || 0) + '|' + (b.tag || '') + '|' + (b.metal || 0);
         (groups[k] = groups[k] || []).push(b);
       });
@@ -402,6 +496,7 @@
             m.toneMapped = false;
           }
           if (b0.tag) (glow[b0.tag] = glow[b0.tag] || []).push(m);
+          if (o.studs && !b0.emit) addStuds(m, studTex || (studTex = studBump()), o.studSize || 0.3, -(o.studBump || 0.9));
           mats[k] = m;
         }
         var im = new T.InstancedMesh(unit, m, list.length);
@@ -421,6 +516,25 @@
         cubes += list.length;
         if (o.burstPart && p.name === o.burstPart) burstSets.push({ im: im, base: base });
       });
+      // piezas suaves (elipsoides y cápsulas) fusionadas por material
+      if (p.pr && p.pr.length) {
+        var pg = {};
+        p.pr.forEach(function (r) { var ci = r[0] === 0 ? 11 : 9; (pg[r.slice(ci).join('|')] = pg[r.slice(ci).join('|')] || []).push(r); });
+        Object.keys(pg).forEach(function (k) {
+          var list = pg[k], r0 = list[0], ci = r0[0] === 0 ? 11 : 9;
+          var col = new T.Color(data.pal[r0[ci]]), emit = r0[ci + 1] || 0, tag = r0[ci + 2] ? data.tags[r0[ci + 2] - 1] : null, metal = r0[ci + 3] || 0;
+          var m = new T.MeshStandardMaterial({ color: col, roughness: metal ? 0.25 : 0.6, metalness: metal ? 1 : 0, envMapIntensity: metal ? 1.2 : (o.envIntensity || 0.25) });
+          if (emit) { m.emissive = col.clone(); m.userData.base = emit * (o.emitScale || 0.5); m.emissiveIntensity = m.userData.base; }
+          if (tag) (glow[tag] = glow[tag] || []).push(m);
+          if (o.studs && !emit) { m.bumpMap = studTex || (studTex = studBump()); m.bumpScale = -(o.studBump || 0.9); }
+          var geo = mergeGeos(list.map(function (r) { return primGeo(r, o.studSize || 0.3); }));
+          var mesh = new T.Mesh(geo, m);
+          mesh.castShadow = !emit;
+          mesh.receiveShadow = true;
+          g.add(mesh);
+          cubes += list.length;
+        });
+      }
     });
 
     var lo = data.bounds[0], hi = data.bounds[1];
@@ -454,11 +568,12 @@
       scene.add(beam);
     }
     if (o.burstPart && !nodes[o.burstPart]) o.burstPart = null;
-    var burstFx = o.burstPart ? new Burst(o.burstColor || '#ffffff', 260, textures) : null;
-    var burst2 = o.burstPart ? new Burst(o.burstColor2 || o.burstColor || '#ffffff', 160, textures) : null;
+    var canBurst = !!(o.burstPart || o.special); // huevo: romper · animal: habilidad especial
+    var burstFx = canBurst ? new Burst(o.burstColor || '#ffffff', 260, textures) : null;
+    var burst2 = canBurst ? new Burst(o.burstColor2 || o.burstColor || '#ffffff', 160, textures) : null;
     if (burstFx) { scene.add(burstFx.points); scene.add(burst2.points); }
     var shock = null;
-    if (o.burstPart) {
+    if (canBurst) {
       shock = new T.Mesh(new T.RingGeometry(0.85, 1, 64), new T.MeshBasicMaterial({
         color: new T.Color(o.burstColor || '#ffffff').multiplyScalar(5), transparent: true, opacity: 0,
         depthWrite: false, blending: T.AdditiveBlending, side: T.DoubleSide,
@@ -506,7 +621,7 @@
     var tracks = Object.keys(data.tracks).map(function (n) { return [nodes[n], data.tracks[n]]; });
     var glowTracks = Object.keys(data.glow).map(function (tag) { return [glow[tag] || [], data.glow[tag]]; });
     var qa = new T.Quaternion(), qb = new T.Quaternion(), tmpQ = new T.Quaternion(), axis = new T.Vector3(), dir = new T.Vector3();
-    var shakeNode = o.burstPart ? nodes[o.shakePart || 'egg'] : null;
+    var shakeNode = canBurst ? (nodes[o.shakePart || 'egg'] || null) : null;
 
     function applyBurst(bt, dt) {
       // 0-1.1 temblor creciente · 1.1 estallido · 1.1-2.0 vuelan · 2.0-3.0 vuelven
@@ -551,7 +666,7 @@
 
     function frame(now) {
       if (st.dead) return;
-      var dt = Math.min(0.05, (now - st.last) / 1000);
+      var dt = Math.max(0, Math.min(0.05, (now - st.last) / 1000));
       st.last = now;
       if (st.playing) st.t += dt;
       if (st.spin && !drag && !orbit.goal) orbit.theta += dt * 0.22;
@@ -567,6 +682,7 @@
       var i0 = Math.floor(f), i1 = (i0 + 1) % data.frames, u = f - i0;
       for (var k = 0; k < tracks.length; k++) {
         var node = tracks[k][0], rows = tracks[k][1], a = rows[i0], b = rows[i1];
+        if (!a || !b || !node) { if (!st.warned) { st.warned = true; console.warn('track', k, i0, rows && rows.length, !!node); } continue; }
         node.position.set(lerp(a[0], b[0], u), lerp(a[1], b[1], u), lerp(a[2], b[2], u));
         qa.set(a[3], a[4], a[5], a[6]);
         qb.set(b[3], b[4], b[5], b[6]);
@@ -609,7 +725,7 @@
       setSpin: function (v) { st.spin = v; if (v) orbit.goal = null; },
       setView: function (id) { st.spin = false; orbit.goal = views[id]; },
       burst: function () {
-        if (!o.burstPart || st.burstT >= 0) return;
+        if (!canBurst || st.burstT >= 0) return;
         st.burstT = 0;
         var c = new T.Vector3();
         (shakeNode || root).getWorldPosition(c);

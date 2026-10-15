@@ -4,9 +4,12 @@ Modelos 3D hechos **solo de cubos**, generados con Python dentro de Blender, con
 animación en bucle y un visor web con VFX (bloom, partículas, haz de luz y
 animación de "romper el huevo").
 
-- **54 modelos:** 7 huevos destacados, 45 huevos de colección por rareza
-  (Común, Poco común, Raro, Épico, Mítico, Legendario, Secreto y Hacker),
-  el Tiburón-Dino y el Buzón-Monstruo.
+- **627 modelos:** 121 huevos (7 destacados, 94 de colección por rareza, 20 de
+  renacimiento), 484 mascotas (4 por huevo, con la temática y la calidad de su
+  huevo), 20 animales de renacimiento esculpidos con vóxeles, el Tiburón-Dino y
+  el Buzón-Monstruo.
+- **Huesos:** cada modelo de Blender tiene esqueleto (un hueso por parte), malla
+  pesada a los huesos y la animación en keyframes de los huesos.
 - **Guía para otra IA:** [`docs/GUIA_HUEVOS_PARA_IA.md`](docs/GUIA_HUEVOS_PARA_IA.md)
   (método, estilo, recetas y escala por rareza; con las capturas de referencia
   en `docs/referencias/`).
@@ -18,13 +21,17 @@ blender/
   voxel.py         constructor: partes, cajas, animación muestreada, helpers (segment, ring, crystal, star, egg_voxels…)
   eggs.py          huevos Celestial y de Hielo
   eggs_themes.py   huevos Infierno, Pantano, Galaxia, Tormenta y Sakura (+ piezas: cuernos, llamas, hojas, setas, nubes, rayos…)
-  tiers.py         45 huevos de colección generados por rareza (catálogo SPECS)
+  tiers.py         huevos de colección y de renacimiento generados por rareza (catálogo SPECS)
+  sculpt.py        escultura con vóxeles (elipsoides y cápsulas -> cubitos de superficie)
+  rebirth.py       los 20 animales de renacimiento (animals.py: primera versión, usada en 1-4)
+  pets.py          mascotas (16 tipos de cuerpo, detalle según la rareza) + pet_names.py
   shark_dino.py    tiburón-dinosaurio
   mailbox_monster.py  buzón-monstruo
   build.py         construye en Blender y exporta .blend / .glb / .json / .png
 tools/make_catalog.py   catálogo, miniaturas y paquetes por rareza
 viewer/            visor web (three.js r149 incluido en vendor/) + voxelstage.js
-exports/           resultados: <modelo>.blend, .glb, .json, .png, thumbs/ y catalog.json
+exports/           resultados: .json (todos), .blend con esqueleto (huevos y animales), .glb (animales),
+                   .png (huevos y animales), thumbs/ (todos) y catalog.json
 docs/              guía, referencias y capturas de resultados
 ```
 

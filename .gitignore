@@ -1,3 +1,5 @@
 __pycache__/
 *.pyc
 *.blend1
+# renders a tamaño completo de las mascotas: en el repo van sus miniaturas (exports/thumbs)
+exports/pet_*.png

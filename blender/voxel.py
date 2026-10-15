@@ -32,6 +32,7 @@ class Part:
         self.pivot = Vector(pivot)
         self.quat = rot if isinstance(rot, Quaternion) else quat(rot)
         self.boxes = []
+        self.prims = []  # piezas suaves: ("ell", c, r, q) | ("cap", a, b, r0, r1)
 
 
 class Model:
@@ -55,6 +56,10 @@ class Model:
         part = self.parts[part] if isinstance(part, str) else part
         q = r if isinstance(r, Quaternion) else quat(r)
         part.boxes.append(dict(c=Vector(c), s=Vector(s), q=q, col=col, emit=emit, tag=tag, metal=metal))
+
+    def prim(self, part, shape, col, emit=0.0, tag=None, metal=0):
+        part = self.parts[part] if isinstance(part, str) else part
+        part.prims.append(dict(shape=shape, col=col, emit=emit, tag=tag, metal=metal))
 
     def sym(self, part, c, s, col, r=(0, 0, 0), **kw):
         """Caja + su espejo en X."""
@@ -95,14 +100,26 @@ class Model:
         h = b["s"] / 2
         return [m @ Vector((sx * h.x, sy * h.y, sz * h.z)) for sx in (-1, 1) for sy in (-1, 1) for sz in (-1, 1)]
 
+    def prim_points(self, name, pr):
+        W = self.world_matrix(name)
+        sh = pr["shape"]
+        if sh[0] == "ell":
+            c, r = sh[1], sh[2]
+            pts = [c + Vector((sx * r.x, sy * r.y, sz * r.z)) for sx in (-1, 1) for sy in (-1, 1) for sz in (-1, 1)]
+        else:
+            a, b, r0, r1 = sh[1], sh[2], sh[3], sh[4]
+            rr = max(r0, r1)
+            pts = [p + Vector((sx * rr, sy * rr, sz * rr)) for p in (a, b) for sx in (-1, 1) for sy in (-1, 1) for sz in (-1, 1)]
+        return [W @ p for p in pts]
+
     def bounds(self):
         lo = Vector((1e9, 1e9, 1e9))
         hi = -lo
         for name, part in self.parts.items():
-            for b in part.boxes:
-                for v in self.box_corners(name, b):
-                    lo = Vector(map(min, lo, v))
-                    hi = Vector(map(max, hi, v))
+            pts = [v for b in part.boxes for v in self.box_corners(name, b)] + [v for pr in part.prims for v in self.prim_points(name, pr)]
+            for v in pts:
+                lo = Vector(map(min, lo, v))
+                hi = Vector(map(max, hi, v))
         return lo, hi
 
     def ground(self, part_name):
@@ -111,7 +128,7 @@ class Model:
         self.parts[part_name].pivot.y -= lo.y
 
     def box_count(self):
-        return sum(len(p.boxes) for p in self.parts.values())
+        return sum(len(p.boxes) + len(p.prims) for p in self.parts.values())
 
     # -- animación ------------------------------------------------------------
     def sample(self):
@@ -143,26 +160,29 @@ class Model:
         qv = lambda q: r((q.x, q.y, q.z, q.w))
         tracks, glow = self.sample()
         lo, hi = self.bounds()
+        pal, tags = [], []
+        for part in self.parts.values():
+            for b in part.boxes + part.prims:
+                if b["col"] not in pal:
+                    pal.append(b["col"])
+                if b["tag"] and b["tag"] not in tags:
+                    tags.append(b["tag"])
         return {
             "name": self.name,
             "fps": self.fps,
             "frames": self.frames,
             "bounds": [r(lo), r(hi)],
+            "pal": pal,
+            "tags": tags,
             "parts": [
                 {
                     "name": p.name,
                     "parent": p.parent,
                     "p": r(p.pivot),
                     "q": qv(p.quat),
-                    "boxes": [
-                        dict(
-                            c=r(b["c"]), s=r(b["s"]), q=qv(b["q"]), col=b["col"],
-                            **({"emit": b["emit"]} if b["emit"] else {}),
-                            **({"tag": b["tag"]} if b["tag"] else {}),
-                            **({"metal": b["metal"]} if b["metal"] else {}),
-                        )
-                        for b in p.boxes
-                    ],
+                    # caja compacta: [x,y,z, sx,sy,sz, color, emit, tag, metal, qx,qy,qz,qw] (se omite lo que sobra)
+                    "bx": [self._pack(b, pal, tags) for b in p.boxes],
+                    **({"pr": [self._pack_prim(pr, pal, tags) for pr in p.prims]} if p.prims else {}),
                 }
                 for p in self.parts.values()
             ],
@@ -171,6 +191,29 @@ class Model:
             **({"stage": self.stage} if self.stage else {}),
             **({"meta": self.meta} if self.meta else {}),
         }
+
+    @staticmethod
+    def _pack(b, pal, tags):
+        f = lambda x: round(x, 3)
+        row = [f(b["c"].x), f(b["c"].y), f(b["c"].z), f(b["s"].x), f(b["s"].y), f(b["s"].z), pal.index(b["col"])]
+        q = b["q"]
+        ident = abs(q.w) > 0.99999
+        extra = [b["emit"] or 0, (tags.index(b["tag"]) + 1) if b["tag"] else 0, b.get("metal", 0)]
+        if not ident:
+            extra += [f(q.x), f(q.y), f(q.z), f(q.w)]
+        while extra and extra[-1] == 0 and len(extra) <= 3:
+            extra.pop()
+        return row + [round(e, 3) if isinstance(e, float) else e for e in extra]
+
+    @staticmethod
+    def _pack_prim(pr, pal, tags):
+        f = lambda x: round(x, 3)
+        sh = pr["shape"]
+        tail = [pal.index(pr["col"]), round(pr["emit"] or 0, 3), (tags.index(pr["tag"]) + 1) if pr["tag"] else 0, pr.get("metal", 0)]
+        if sh[0] == "ell":
+            q = sh[3]
+            return [0] + [f(x) for x in (*sh[1], *sh[2], q.x, q.y, q.z, q.w)] + tail
+        return [1] + [f(x) for x in (*sh[1], *sh[2], sh[3], sh[4])] + tail
 
     def save_json(self, path):
         with open(path, "w") as f:
