@@ -476,28 +476,43 @@ vóxeles**:
   ciempiés estirados en línea recta). La animación se hace después con los
   huesos.
 
-## 12. Mascotas (4 por huevo, ~480)
+## 12. Mascotas (4 por huevo, 484 en total, todas distintas)
 
-Archivo: `blender/pets.py` + `blender/pet_names.py`. Cada huevo tiene 4
-mascotas con su temática (Panal Real → Abeja Reina, Obrera, Zángano,
-Guardiana; Rubí → golem, escarabajo, serpiente y zorro de rubí…). Hay 16 tipos
-de cuerpo: cuadrúpedos (gato, perro, zorro, conejo, oso, panda, ciervo,
-caballo, unicornio, tigre, león, lobo, cerdo, ratón), aves, peces y tiburones,
-insectos, serpientes, dragones, slimes, fantasmas, medusas, setas, golems,
-robots, pulpos, ranas, tortugas, cangrejos y murciélagos. Los colores salen de
-la paleta del huevo.
+Las mascotas **no se generan automáticamente a partir de un tipo genérico**:
+cada una está diseñada a mano en `blender/pet_roster_a.py` … `pet_roster_e.py`
+(una línea por mascota con su especie, proporciones, rasgos y colores
+naturales). Reglas del catálogo:
 
-**La rareza del huevo decide la calidad de sus mascotas:**
+- **Ninguna especie se repite dentro de un huevo** y casi ninguna entre huevos
+  (484 nombres distintos; una sola serpiente en todo el juego).
+- La temática del huevo decide qué animales salen (Panal Real → abeja reina,
+  avispón gigante, hormiga melífera y kinkajú; Medusa → medusa luna, carabela
+  portuguesa, pulpo dumbo y ctenóforo…).
+- Los colores son los de la especie (cebra a rayas, jirafa con manchas, mapache
+  con antifaz…) con un ligero tinte del huevo en los huevos de color.
 
-| Nivel | Vóxel | Accesorios | Animación | VFX |
-|---|---|---|---|---|
-| Común | grande | ninguno | saltito / balanceo | ninguno |
-| Poco común | | + collar | + caminar, cola | pocas chispas |
-| Raro | | + gema en la frente, ojos brillantes | + orejas | brillo de suelo |
-| Épico | | + alas del tipo del huevo, aura | + mandíbula, aleteo | 2 sistemas de partículas |
-| Mítico | | + orbes orbitando, corona | | + bloom |
-| Legendario | | + halo, aura doble | | 3 sistemas |
-| Secreto | fino | + llamas de aura | todo | máximo (con brillo contenido) |
+**Planos de cuerpo** (`pk_*.py`), cada uno con muchos rasgos opcionales:
+
+| Plano | Archivo | Ejemplos de rasgos |
+|---|---|---|
+| cuadrúpedo (`quad`) | `pk_quad.py` | orejas (puntiagudas, largas, de abanico…), cuernos (astas, carnero, íbice, kudu, unicornio, rinoceronte, triceratops…), trompa, colmillos, melena, crin, púas, armadura, escamas de pangolín, joroba, alas, varias cabezas/colas, pico, calcetines |
+| lagarto (`lizard`) | `pk_quad.py` | gorguera, cresta, vela, papada, ojos de camaleón, cola enrollada, branquias, escudos, alas de costillas |
+| terópodo (`theropod`) | `pk_quad.py` | vela, cúpula, cresta, plumas, garra en hoz, alas de wyvern |
+| ave (`bird`) | `pk_air_sea.py` | 12 picos, crestas, disco facial, cuello largo, alas plegadas/abiertas/aletas/membrana, colas (abanico, lira, hoz, serpentinas…) |
+| pez (`fish`) | `pk_air_sea.py` | formas (torpedo, disco, globo, caja, pez luna, raya, caballito), aletas, bocas (dientes, fauces, pico, espada, sierra, martillo, señuelo), mamíferos marinos |
+| insecto/arácnido (`bug`) | `pk_air_sea.py` | 6 u 8 patas, saltadoras o de mantis, alas (abeja, libélula, mariposa, polilla, cristal…), cuernos, mandíbulas, cola de escorpión |
+| crustáceo, cefalópodo, cadena, tortuga/caracol, rana, primate/bípedo, robot, criatura mágica, murciélago | `pk_air_sea.py`, `pk_misc.py` | pinzas asimétricas, concha, 8–12 tentáculos, segmentos sin huecos, volcán o planeta encima, gólems y robots con articulaciones |
+
+**La rareza del huevo decide la calidad** (sin tapar la silueta de la especie):
+
+| Nivel | Vóxel | Extras | VFX |
+|---|---|---|---|
+| Común / Poco común | grande | peana de hierba | pocas chispas |
+| Raro | medio | flores en la peana | chispas de color |
+| Épico | fino | ojos brillantes, marcas del huevo (runas, grietas, circuitos…), aura en el suelo | partículas |
+| Mítico | | + cristales orbitando | + bloom |
+| Legendario | | + doble aura | 3 sistemas |
+| Secreto y Hacker | muy fino | **gigantes (×2,1)**, llamas de aura y el máximo de rasgos | máximo |
 
 ## 13. Huesos (esqueleto) en Blender
 

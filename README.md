@@ -5,8 +5,9 @@ animación en bucle y un visor web con VFX (bloom, partículas, haz de luz y
 animación de "romper el huevo").
 
 - **627 modelos:** 121 huevos (7 destacados, 94 de colección por rareza, 20 de
-  renacimiento), 484 mascotas (4 por huevo, con la temática y la calidad de su
-  huevo), 20 animales de renacimiento esculpidos con vóxeles, el Tiburón-Dino y
+  renacimiento), 484 mascotas diseñadas una a una (4 por huevo, todas de especies
+  distintas, con la temática y la calidad de su huevo; las de huevos secretos y
+  hacker son gigantes), 20 animales de renacimiento esculpidos con vóxeles, el Tiburón-Dino y
   el Buzón-Monstruo.
 - **Huesos:** cada modelo de Blender tiene esqueleto (un hueso por parte), malla
   pesada a los huesos y la animación en keyframes de los huesos.
@@ -24,7 +25,9 @@ blender/
   tiers.py         huevos de colección y de renacimiento generados por rareza (catálogo SPECS)
   sculpt.py        escultura con vóxeles (elipsoides y cápsulas -> cubitos de superficie)
   rebirth.py       los 20 animales de renacimiento (animals.py: primera versión, usada en 1-4)
-  pets.py          mascotas (16 tipos de cuerpo, detalle según la rareza) + pet_names.py
+  pets.py          mascotas: calidad por rareza, animación, peana y escenario
+  pet_roster_*.py  catálogo a mano de las 484 mascotas (especie, proporciones, rasgos, colores)
+  pk_*.py          planos de cuerpo: cuadrúpedos, lagartos, dinosaurios, aves, peces, insectos, robots…
   shark_dino.py    tiburón-dinosaurio
   mailbox_monster.py  buzón-monstruo
   build.py         construye en Blender y exporta .blend / .glb / .json / .png

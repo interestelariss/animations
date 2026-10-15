@@ -171,7 +171,18 @@ def make_bundles(items, out):
     for it in items:
         g = it["group"] if it["group"] != "mascotas" else "m_" + it["eggGroup"]
         groups.setdefault(g, []).append(it)
-    for g, group in groups.items():
+    chunks = []
+    for g, group in groups.items():  # paquetes de 14 MB como máximo
+        cur, size, part = [], 0, 1
+        for it in group:
+            sz = os.path.getsize(os.path.join(EXP, it["id"] + ".json"))
+            if cur and size + sz > 14e6:
+                chunks.append((g if part == 1 else f"{g}_{part}", cur))
+                cur, size, part = [], 0, part + 1
+            cur.append(it)
+            size += sz
+        chunks.append((g if part == 1 else f"{g}_{part}", cur))
+    for g, group in chunks:
         bundle = {}
         for it in group:
             with open(os.path.join(EXP, it["id"] + ".json")) as f:

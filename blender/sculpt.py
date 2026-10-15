@@ -85,14 +85,16 @@ def voxelize(m, part, prims, v, colfn, carve=None):
         return _smooth(m, part, prims, colfn)
     v *= VOXEL_SCALE
     lo, hi = _bounds(prims)
-    nx, ny, nz = (int(math.ceil((hi[i] - lo[i]) / v)) + 2 for i in range(3))
+    # rejilla alineada al origen de la parte (centros en (k + 0.5) * v): figuras simétricas sin "pico" suelto
+    i0 = [int(math.floor(lo[i] / v)) - 1 for i in range(3)]
+    nx, ny, nz = (int(math.ceil(hi[i] / v)) + 2 - i0[i] for i in range(3))
     grid = {}
     for ix in range(nx):
-        x = lo.x + (ix - 0.5) * v
+        x = (i0[0] + ix + 0.5) * v
         for iy in range(ny):
-            y = lo.y + (iy - 0.5) * v
+            y = (i0[1] + iy + 0.5) * v
             for iz in range(nz):
-                p = Vector((x, y, lo.z + (iz - 0.5) * v))
+                p = Vector((x, y, (i0[2] + iz + 0.5) * v))
                 if _inside(prims, p) and not (carve and _inside(carve, p)):
                     grid[(ix, iy, iz)] = p
     count = 0

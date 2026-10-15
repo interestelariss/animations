@@ -537,7 +537,8 @@
       }
     });
 
-    var lo = data.bounds[0], hi = data.bounds[1];
+    var fb = o.focus || data.bounds;
+    var lo = fb[0], hi = fb[1];
     var size = Math.max(hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2]);
     var target = new T.Vector3((lo[0] + hi[0]) / 2, o.targetY != null ? o.targetY : (hi[1] - lo[1]) * 0.48, (lo[2] + hi[2]) / 2);
     var views = o.views || { front: [0, 0.18], side: [Math.PI / 2, 0.15], tq: [0.7, 0.3] };

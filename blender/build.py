@@ -304,6 +304,8 @@ def stage(name, samples, res, m=None):
     st = STAGES.get(name)
     if st is None:  # escenario a partir del ajuste web, con la cámara encuadrada al tamaño del modelo
         lo_, hi_ = m.bounds()
+        if m.stage and m.stage.get("focus"):
+            lo_, hi_ = (Vector(v) for v in m.stage["focus"])
         size = max(hi_.x - lo_.x, hi_.y - lo_.y, hi_.z - lo_.z)
         c = Vector(((lo_.x + hi_.x) / 2, -(lo_.z + hi_.z) / 2, (lo_.y + hi_.y) * 0.45))  # Y-arriba -> Z-arriba
         if "egg" in m.parts:
